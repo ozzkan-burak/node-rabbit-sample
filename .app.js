@@ -13,7 +13,16 @@ router.get('*', (req, res, next) => {
   next();
 });
 
-app.use('/', router);
+router.post('/deneme', (req, res, next) => {
+  const { email } = req.body;
+
+  res.status(200).json({
+    email: email,
+    date: new Date().toISOString(),
+    message: 'POST request received successfully',
+  });
+  next();
+});
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
