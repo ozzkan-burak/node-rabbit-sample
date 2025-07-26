@@ -3,6 +3,7 @@ const app = express();
 const router = express.Router();
 const port = 3030;
 const bodyParser = require('body-parser');
+const emailPublisher = require('./publisher');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -13,15 +14,15 @@ router.get('*', (req, res, next) => {
   next();
 });
 
-router.post('/deneme', (req, res, next) => {
+router.post('/register', async (req, res, next) => {
   const { email } = req.body;
-
-  res.status(200).json({
-    email: email,
-    date: new Date().toISOString(),
-    message: 'POST request received successfully',
-  });
-  next();
+  try {
+    await emailPublisher(email);
+    res.status(200).send('Email registered successfully');
+  } catch (error) {
+    console.error('Error publishing email:', error);
+    res.status(500).send('Error registering email');
+  }
 });
 
 app.listen(port, () => {
